@@ -51,7 +51,7 @@ func DeleteTodo(c *gin.Context) {
 
 func main() {
 	todos = append(todos, Todo{Id: GetNextId(), Value: "CodeHouse", DueDate: "7/31/2021"})
-
+	fmt.Println("does this work")
 	r := gin.Default()
 	r.Use(static.Serve("/", static.LocalFile("./todo-vue/dist", false)))
 	r.GET("/api/todos", GetTodos)

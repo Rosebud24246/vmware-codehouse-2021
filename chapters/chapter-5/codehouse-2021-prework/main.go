@@ -9,37 +9,48 @@ import (
 )
 
 var nextId int = 0
-var todos []Todo
+var quiz_questions []Question
+var value int
 
 func GetNextId() int {
-	value := nextId
+	value = nextId
 	nextId++
 	return value
 }
 
-func GetTodos(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"list": todos})
+func GetQuestion(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"list": quiz_questions})
 }
 
-func PostTodo(c *gin.Context) {
-	var item Todo
+func GetNextQuestion() string {
+	var questionBank = [4] string {"Please enter", "a ", " tired ", " b***h "}
+	return questionBank[value]
+}
+
+func GetNextAnswer() string {
+	var answerBank = [4] string {"Just", "A", "Little", "Depression"}
+	return answerBank [value]
+}
+
+func PostQuestion(c *gin.Context) {
+	var item Question
 	if err := c.ShouldBindJSON(&item); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	item.Id = GetNextId()
-	todos = append(todos, item)
+	quiz_questions = append(quiz_questions, item)
 	c.String(http.StatusCreated, c.FullPath()+"/"+strconv.Itoa(item.Id))
 }
 
-func DeleteTodo(c *gin.Context) {
+func DeleteQuestion(c *gin.Context) {
 	idString := c.Param("id")
 
 	if id, err := strconv.Atoi(idString); err == nil {
-		for index := range todos {
-			if todos[index].Id == id {
-				todos = append(todos[:index], todos[index+1:]...)
+		for index := range quiz_questions {
+			if quiz_questions[index].Id == id {
+				quiz_questions = append(quiz_questions[:index], quiz_questions[index+1:]...)
 				c.Writer.WriteHeader(http.StatusNoContent)
 				return
 			}
@@ -50,12 +61,15 @@ func DeleteTodo(c *gin.Context) {
 }
 
 func main() {
-	todos = append(todos, Todo{Id: GetNextId(), Value: "CodeHouse", DueDate: "7/31/2021"})
+	quiz_questions = append(quiz_questions, Question{
+		Id: 				GetNextId(), 
+		Question_Statement: GetNextQuestion(), 
+		Answer:				GetNextAnswer()})
 
 	r := gin.Default()
 	r.Use(static.Serve("/", static.LocalFile("./todo-vue/dist", false)))
-	r.GET("/api/todos", GetTodos)
-	r.POST("/api/todos", PostTodo)
-	r.DELETE("/api/todos/:id", DeleteTodo)
+	r.GET("/api/todos", GetQuestion)
+	r.POST("/api/todos", PostQuestion)
+	r.DELETE("/api/todos/:id", DeleteQuestion)
 	r.Run(":8090")
 }

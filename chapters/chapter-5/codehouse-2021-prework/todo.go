@@ -1,7 +1,7 @@
 package main
 
-type Todo struct {
-	Id      int    `json:id`
-	Value   string `json:"value"`
-	DueDate string `json:"due_date"`
+type Question struct {
+	Id      			 int    `json:"id"`
+	Question_Statement   string `json:"question_statement"`
+	Answer				 string `json:"answer"`
 }

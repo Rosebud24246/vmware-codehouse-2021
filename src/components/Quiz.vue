@@ -1,5 +1,8 @@
 <template>
   <div id="quiz-container">
+    <audio controls>
+      <source src="@/assets/musicalBeats.mp3" type="audio/mpeg">
+    </audio>
     <img id="logo-codeify" src="@/assets/codify.svg" alt="headsUP Crown" />
     <h1 id="logo-headline">codeSivity</h1>
     <!-- New Section for User Statistics -->

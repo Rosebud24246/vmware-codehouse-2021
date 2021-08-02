@@ -1,10 +1,10 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 var nextId int = 0
@@ -101,15 +101,15 @@ func GetQuestions() [5]Question {
 	var incorrect3 = [3]string{"String", "int", "boolean"}
 	question3.IncorrectAnswers = incorrect3[:]
 
-	//Questions 4 -
+	//Questions 4 - Functions / Methods
 	var question4 Question
 	question4.Category = "java"
 	question4.Difficulty = "mediuem"
 	question4.Type = "multiple"
-	question4.Question = "What conditional is used when you only want a certain action to occur if a condition is met?"
-	question4.CorrectAnswer = "If"
+	question4.Question = "What is the correct syntax for initializing a method called IncreaseDiversity?"
+	question4.CorrectAnswer = "void IncreaseDiversity()"
 
-	var incorrect4 = [3]string{"String", "int", "boolean"}
+	var incorrect4 = [3]string{"public IncreaseDiversity()", "IncreaseDiversity() void()", "IncreaseDiversity(double a)"}
 	question4.IncorrectAnswers = incorrect4[:]
 
 	//Questions 5 -
@@ -117,10 +117,10 @@ func GetQuestions() [5]Question {
 	question5.Category = "java"
 	question5.Difficulty = "mediuem"
 	question5.Type = "multiple"
-	question5.Question = "What conditional is used when you only want a certain action to occur if a condition is met?"
-	question5.CorrectAnswer = "If"
+	question5.Question = "All Java Applications must have a method called____?"
+	question5.CorrectAnswer = "main()"
 
-	var incorrect5 = [3]string{"String", "int", "boolean"}
+	var incorrect5 = [3]string{"method()", "java()", "hello()"}
 	question5.IncorrectAnswers = incorrect5[:]
 
 	var questions = [5]Question{question1, question2, question3, question4, question5}
@@ -131,7 +131,7 @@ func GetQuestions() [5]Question {
 func main() {
 	r := gin.Default()
 	r.Use(cors.Default())
-	//r.Use(static.Serve("/", static.LocalFile("./todo-vue/dist", false)))
+	r.Use(static.Serve("/", static.LocalFile("../dist", false)))
 	r.GET("/api/response", GetResponse)
 	// r.POST("/api/quiz_questions", PostQuestion)
 	// r.DELETE("/api/quiz_questions/:response_code", DeleteQuestion)

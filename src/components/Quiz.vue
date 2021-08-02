@@ -124,9 +124,10 @@ export default {
     async fetchQuestions() {
       this.loading = true;
       let response = await fetch(
-        "https://opentdb.com/api.php?amount=5&category=9"
+        "http://localhost:8090/api/response"
       );
       let jsonResponse = await response.json();
+      jsonResponse = jsonResponse.my_response;
       let index = 0; // index is used to identify single answer
       let data = jsonResponse.results.map((question) => {
         // put answers on question into single array

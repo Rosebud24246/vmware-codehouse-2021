@@ -2,14 +2,12 @@ package main
 
 import (
 	"net/http"
-	"strconv"
 
-	"github.com/gin-contrib/static"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 var nextId int = 0
-var response Response
 var value int
 
 func GetNextId() int {
@@ -18,54 +16,54 @@ func GetNextId() int {
 	return value
 }
 
-func GetQuestion(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"list": quiz_questions})
-}
+// func GetQuestion(c *gin.Context) {
+// 	c.JSON(http.StatusOK, gin.H{"list": quiz_questions})
+// }
 
-func GetNextQuestion() string {
-	var questionBank = [4]string{"Please enter", "a ", " tired ", " b***h "}
-	return questionBank[value]
-}
+// func GetNextQuestion() string {
+// 	var questionBank = [4]string{"Please enter", "a ", " tired ", " b***h "}
+// 	return questionBank[value]
+// }
 
-func GetNextAnswer() string {
-	var answerBank = [4]string{"Just", "A", "Little", "Depression"}
-	return answerBank[value]
-}
+// func GetNextAnswer() string {
+// 	var answerBank = [4]string{"Just", "A", "Little", "Depression"}
+// 	return answerBank[value]
+// }
 
-func PostQuestion(c *gin.Context) {
-	var item Question
-	if err := c.ShouldBindJSON(&item); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// func PostQuestion(c *gin.Context) {
+// 	var item Question
+// 	if err := c.ShouldBindJSON(&item); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	item.Id = GetNextId()
-	quiz_questions = append(quiz_questions, item)
-	c.String(http.StatusCreated, c.FullPath()+"/"+strconv.Itoa(item.Id))
-}
+// 	item.Id = GetNextId()
+// 	quiz_questions = append(quiz_questions, item)
+// 	c.String(http.StatusCreated, c.FullPath()+"/"+strconv.Itoa(item.Id))
+// }
 
-func DeleteQuestion(c *gin.Context) {
-	idString := c.Param("id")
+// func DeleteQuestion(c *gin.Context) {
+// 	idString := c.Param("id")
 
-	if id, err := strconv.Atoi(idString); err == nil {
-		for index := range quiz_questions {
-			if quiz_questions[index].Id == id {
-				quiz_questions = append(quiz_questions[:index], quiz_questions[index+1:]...)
-				c.Writer.WriteHeader(http.StatusNoContent)
-				return
-			}
-		}
-	}
+// 	if id, err := strconv.Atoi(idString); err == nil {
+// 		for index := range quiz_questions {
+// 			if quiz_questions[index].Id == id {
+// 				quiz_questions = append(quiz_questions[:index], quiz_questions[index+1:]...)
+// 				c.Writer.WriteHeader(http.StatusNoContent)
+// 				return
+// 			}
+// 		}
+// 	}
 
-	c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
-}
+// 	c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+// }
 
-func GetResponse() Response {
+func GetResponse(c *gin.Context) {
 	var response Response
 	response.Code = "0"
 	response.Results = GetQuestions()
 
-	return response
+	c.JSON(http.StatusOK, gin.H{"my_response": response})
 }
 
 func GetQuestions() [5]Question {
@@ -131,12 +129,11 @@ func GetQuestions() [5]Question {
 }
 
 func main() {
-	response = GetResponse()
-
 	r := gin.Default()
-	r.Use(static.Serve("/", static.LocalFile("./todo-vue/dist", false)))
+	r.Use(cors.Default())
+	//r.Use(static.Serve("/", static.LocalFile("./todo-vue/dist", false)))
 	r.GET("/api/response", GetResponse)
-	r.POST("/api/quiz_questions", PostQuestion)
-	r.DELETE("/api/quiz_questions/:response_code", DeleteQuestion)
+	// r.POST("/api/quiz_questions", PostQuestion)
+	// r.DELETE("/api/quiz_questions/:response_code", DeleteQuestion)
 	r.Run(":8090")
 }

@@ -1,7 +1,15 @@
 package main
 
 type Question struct {
-	Id      			 int    `json:"id"`
-	Question_Statement   string `json:"question_statement"`
-	Answer				 string `json:"answer"`
+	Category         string   `json:"category"`
+	Type             string   `json:"type"`
+	Difficulty       string   `json:"difficulty"`
+	Question         string   `json:"question"`
+	CorrectAnswer    string   `json:"correct_answer"`
+	IncorrectAnswers []string `json:"incorrect_answers"`
+}
+
+type Response struct {
+	Code    string      `json:"response_code"`
+	Results [5]Question `json:"results"`
 }
